@@ -1,8 +1,5 @@
 package dao;
 
-import entidade.Cadastro;
-import java.util.List;
-
 public interface CadastroDao {
 
     void salvar(Object object) throws Exception;
