@@ -1,0 +1,364 @@
+/*CRIAÇÃO DO BANCO DE DADOS*/
+CREATE DATABASE projetodeferias
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Portuguese_Brazil.1252'
+    LC_CTYPE = 'Portuguese_Brazil.1252'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+###############################################################################################################################################################
+
+/*CRIAÇÃO DAS TABELAS DO BANCO DE DADOS*/
+
+  CREATE TABLE TAREFA (
+  idTAREFA SERIAL NOT NULL,
+  NOME_TA VARCHAR(50) NOT NULL,
+  NIVEL_PRIO VARCHAR(10) NOT NULL,
+  STATUS_TA VARCHAR(13) NOT NULL,
+  PRIMARY KEY(idTAREFA)
+);
+
+ 
+ CREATE TABLE CADASTRO (
+  idCADASTRO SERIAL NOT NULL,
+  NOME VARCHAR(50) NOT NULL,
+  SOBRENOME VARCHAR(50) NOT NULL,
+  CPF VARCHAR(14) NOT NULL UNIQUE,
+  TELEFONE VARCHAR(14) NOT NULL,
+  EMAIL VARCHAR(256) NOT NULL UNIQUE,
+  DATA_NAC DATE NOT NULL,
+  PRIMARY KEY(idCADASTRO)
+  
+);
+ 
+
+CREATE TABLE USUARIO (
+  idUSUARIO SERIAL NOT NULL,
+  LOGIN VARCHAR(20) NOT NULL UNIQUE,
+  SENHA VARCHAR(4) NOT NULL UNIQUE,
+  PRIMARY KEY(idUSUARIO),
+  idCADASTRO BIGINT NOT NULL ,
+  FOREIGN KEY (idCADASTRO) REFERENCES CADASTRO(idCADASTRO) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+CREATE TABLE ENTRADA_USUARIO (
+  idENTRADA_USUARIO SERIAL NOT NULL,
+  LOGIN_ACESSO VARCHAR (20) NOT NULL UNIQUE,
+  SENHA_ACESSO VARCHAR(4) NOT NULL UNIQUE,
+  PRIMARY KEY(idENTRADA_USUARIO),
+  idUSUARIO BIGINT NOT NULL, 
+  FOREIGN KEY (idUSUARIO) REFERENCES USUARIO(idUSUARIO) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+CREATE TABLE AGENDAMENTO (
+  idAGENDAMENTO SERIAL NOT NULL,
+  HORARIO_TA VARCHAR(10) NOT NULL,
+  DATA_TA DATE NOT NULL,
+  PRIMARY KEY(idAGENDAMENTO),
+  idTAREFA BIGINT NOT NULL,
+  idUSUARIO BIGINT NOT NULL,
+  FOREIGN KEY(idTAREFA)REFERENCES TAREFA(idTAREFA)ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(idUSUARIO)REFERENCES USUARIO(idUSUARIO)ON DELETE CASCADE ON UPDATE CASCADE
+  );
+
+  
+###############################################################################################################################################################
+
+/*INSERTES INICIAIS NO BANCO DE DADOS*/
+
+INSERT INTO TAREFA(NOME_TA,NIVEL_PRIO,STATUS_TA)VALUES('Estudo','Dificil','FINALIZADA');
+INSERT INTO TAREFA(NOME_TA,NIVEL_PRIO,STATUS_TA)VALUES('Prova','Dificil','FINALIZADA');
+INSERT INTO TAREFA(NOME_TA,NIVEL_PRIO,STATUS_TA)VALUES('Trabalhar','Medio','NÃO CONCLUIDA');
+INSERT INTO TAREFA(NOME_TA,NIVEL_PRIO,STATUS_TA)VALUES('Leitura','Medio','NÃO CONCLUIDA');
+INSERT INTO TAREFA(NOME_TA,NIVEL_PRIO,STATUS_TA)VALUES('Academia','Facil','EM ANDAMENTO');
+INSERT INTO TAREFA(NOME_TA,NIVEL_PRIO,STATUS_TA)VALUES('Caminhar','Facil','EM ANDAMENTO');
+
+
+INSERT INTO CADASTRO (NOME, SOBRENOME, CPF, TELEFONE, EMAIL, DATA_NAC) VALUES('Carlos','Machado','078.123.342-10','(47)993221-456','Carlos@gmail.com',to_date('10/01/1992','DD/MM/YYYY'));
+INSERT INTO CADASTRO (NOME, SOBRENOME, CPF, TELEFONE, EMAIL, DATA_NAC) VALUES('Maria','Albertina','079.134.453-11','(47)993221-456','Maria@gmail.com',to_date('11/02/1993','DD/MM/YYYY'));
+INSERT INTO CADASTRO (NOME, SOBRENOME, CPF, TELEFONE, EMAIL, DATA_NAC) VALUES('Antonio','Costa','080.145.564-12','(47)993221-456','Antonio@gmail.com',to_date('12/03/1994','DD/MM/YYYY'));
+INSERT INTO CADASTRO (NOME, SOBRENOME, CPF, TELEFONE, EMAIL, DATA_NAC) VALUES('Fernanda','Aparecida','081.156.675-13','(47)993221-456','Fernanda@gmail.com',to_date('13/04/1995','DD/MM/YYYY'));
+INSERT INTO CADASTRO (NOME, SOBRENOME, CPF, TELEFONE, EMAIL, DATA_NAC) VALUES('Gabriel','Monteiro','082.167.786-14','(47)993221-456','Gabriel@gmail.com',to_date('14/05/1996','DD/MM/YYYY'));
+INSERT INTO CADASTRO (NOME, SOBRENOME, CPF, TELEFONE, EMAIL, DATA_NAC) VALUES('Lucas','Coelho','083.178.897-15','(47)993221-456','lucas@gmail.com',to_date('15/06/1997','DD/MM/YYYY'));
+
+INSERT INTO USUARIO (LOGIN,SENHA,idCADASTRO) VALUES('Carlos_Machado','1234',1);
+INSERT INTO USUARIO (LOGIN,SENHA,idCADASTRO) VALUES('Maria124','1235',2);
+INSERT INTO USUARIO (LOGIN,SENHA,idCADASTRO) VALUES('PLAYERONE','1236',3);
+INSERT INTO USUARIO (LOGIN,SENHA,idCADASTRO) VALUES('GiralsolFeliz','1237',4);
+INSERT INTO USUARIO (LOGIN,SENHA,idCADASTRO) VALUES('GabrielPonteiro','1238',5);
+INSERT INTO USUARIO (LOGIN,SENHA,idCADASTRO) VALUES('O Desenvolvedor','1239',6);
+
+INSERT INTO ENTRADA_USUARIO (LOGIN_ACESSO,SENHA_ACESSO,idUSUARIO) values('Carlos_Macha','1234',1);
+INSERT INTO ENTRADA_USUARIO (LOGIN_ACESSO,SENHA_ACESSO,idUSUARIO) values('Maria124','1235',2);
+INSERT INTO ENTRADA_USUARIO (LOGIN_ACESSO,SENHA_ACESSO,idUSUARIO) values('PLAYERONE','1236',3);
+INSERT INTO ENTRADA_USUARIO (LOGIN_ACESSO,SENHA_ACESSO,idUSUARIO) values('GiralsolFeliz','1237',4);
+INSERT INTO ENTRADA_USUARIO (LOGIN_ACESSO,SENHA_ACESSO,idUSUARIO) values('GabrielPonteiro','1238',5);
+INSERT INTO ENTRADA_USUARIO (LOGIN_ACESSO,SENHA_ACESSO,idUSUARIO) values('O Desenvolvedor','1239',6);
+
+INSERT INTO AGENDAMENTO(HORARIO_TA,DATA_TA,idTAREFA,idUSUARIO) VALUES('15:00',to_date('11/04/2003','DD/MM/YYYY'),1,1);
+INSERT INTO AGENDAMENTO(HORARIO_TA,DATA_TA,idTAREFA,idUSUARIO) VALUES('15:30',to_date('12/05/2004','DD/MM/YYYY'),2,2);
+INSERT INTO AGENDAMENTO(HORARIO_TA,DATA_TA,idTAREFA,idUSUARIO) VALUES('16:45',to_date('13/06/2005','DD/MM/YYYY'),3,3);
+INSERT INTO AGENDAMENTO(HORARIO_TA,DATA_TA,idTAREFA,idUSUARIO) VALUES('19:25',to_date('14/07/2006','DD/MM/YYYY'),4,4);
+INSERT INTO AGENDAMENTO(HORARIO_TA,DATA_TA,idTAREFA,idUSUARIO) VALUES('22:00',to_date('15/08/2007','DD/MM/YYYY'),5,5);
+INSERT INTO AGENDAMENTO(HORARIO_TA,DATA_TA,idTAREFA,idUSUARIO) VALUES('00:00',to_date('16/09/2008','DD/MM/YYYY'),6,6);
+
+###############################################################################################################################################################
+
+/*DELETES PARA TODAS AS TABELAS DO BANCO DE DADOS*/
+
+DROP TABLE AGENDAMENTO;
+
+DROP TABLE ENTRADA_USUARIO;
+
+DROP TABLE USUARIO;
+
+DROP TABLE CADASTRO;
+
+DROP TABLE TAREFA;
+
+###############################################################################################################################################################
+
+
+/*SELECTES,UPDATES UTILIZADOS NO SISTEMA*/
+
+//SELECTES(
+
+//SELECT PARA VER AS TAREFAS NO AGENDAMENTO DE UM USUARIO//(
+
+SELECT*FROM  Tarefa T
+JOIN AGENDAMENTO A ON A.idtarefa = T.idtarefa
+JOIN USUARIO U ON U.idusuario = A.idusuario
+JOIN ENTRADA_USUARIO E ON E.idusuario = U.idusuario
+WHERE T.nome_ta ~*/*Nome da tarefa*/ AND E.login_acesso= /*Login_Acesso da tabela de entrada_usuario*/
+
+EX:(
+
+SELECT*FROM  Tarefa T
+JOIN AGENDAMENTO A ON A.idtarefa = T.idtarefa
+JOIN USUARIO U ON U.idusuario = A.idusuario
+JOIN ENTRADA_USUARIO E ON E.idusuario = U.idusuario
+WHERE T.nome_ta ~*'Estudo' AND E.login_acesso= 'Carlos_Macha'
+)
+)
+
+
+//SELECT PARA PESQUISAR PRIORIDADE NO AGENDAMENTO DE UM USUARIO//(
+
+SELECT*FROM  Tarefa T
+JOIN AGENDAMENTO A ON A.idtarefa = T.idtarefa
+JOIN USUARIO U ON U.idusuario = A.idusuario
+JOIN ENTRADA_USUARIO E ON E.idusuario = U.idusuario
+WHERE T.nivel_prio=/*Nivel de prioridade da tarefa na tabela tarefa*/  and E.login_acesso= /*Login_Acesso da tabela de ENTRADA_USUARIO*/
+
+EX:(
+
+SELECT*FROM  Tarefa T
+JOIN AGENDAMENTO A ON A.idtarefa = T.idtarefa
+JOIN USUARIO U ON U.idusuario = A.idusuario
+JOIN ENTRADA_USUARIO E ON E.idusuario = U.idusuario
+WHERE T.nivel_prio='facil' and E.login_acesso= 'Carlos_Macha'
+
+)
+)
+
+
+//SELECT PARA PESQUISAR STATUS NO AGENDAMENTO DE UM USUARIO//(
+
+SELECT*FROM  Tarefa T
+JOIN AGENDAMENTO A ON A.idtarefa = T.idtarefa
+JOIN USUARIO U ON U.idusuario = A.idusuario
+JOIN ENTRADA_USUARIO E ON E.idusuario = U.idusuario
+WHERE T.status_ta= /*Status da tarefa na tabela tarefa*/   and E.login_acesso= /*Login_Acesso da tabela de ENTRADA_USUARIO*/
+
+EX:(
+
+SELECT*FROM  Tarefa T
+JOIN AGENDAMENTO A ON A.idtarefa = T.idtarefa
+JOIN USUARIO U ON U.idusuario = A.idusuario
+JOIN ENTRADA_USUARIO E ON E.idusuario = U.idusuario
+WHERE T.status_ta= 'EM ANDAMENTO' and E.login_acesso='Carlos_Macha'
+
+)
+)
+
+
+//SELECT PARA PESQUISAR CPF DO USUARIO AO TENTAR CADASTRAR NO SISTEMA//(
+
+SELECT
+C.cpf
+FROM CADASTRO C
+WHERE C.cpf LIKE ? /*CPF DO CADASTRO*/
+
+EX:(
+
+SELECT
+C.cpf
+FROM CADASTRO C
+WHERE C.cpf LIKE '078.123.342-10'
+
+)
+)
+
+
+//SELECT PARA PESQUISAR E CONFIRMAR EXISTENCIA DE UM CADASTRO NO SISTEMA DE ACORDO COM O LOGIN_ACESSO//(
+
+SELECT * FROM CADASTRO C
+JOIN USUARIO U ON U.idcadastro = C.idcadastro
+JOIN ENTRADA_USUARIO E ON E.idusuario = U.idusuario
+WHERE E.login_acesso= /*Login_Acesso da tabela de ENTRADA_USUARIO*/  AND E.senha_acesso= /*senha_acesso da tabela de ENTRADA_USUARIO*/
+
+EX:(
+
+SELECT * FROM CADASTRO C
+JOIN USUARIO U ON U.idcadastro = C.idcadastro
+JOIN ENTRADA_USUARIO E ON E.idusuario = U.idusuario
+WHERE E.login_acesso= 'Carlos_Macha' AND E.senha_acesso= '1234'
+)
+)
+
+
+//SELECT PARA PESQUISAR LOGIN DE USUARIO NO BANCO//(
+
+SELECT
+U.login
+FROM USUARIO U
+WHERE U.login LIKE /*Login da tabela de USUARIO*/;
+
+EX:(
+
+SELECT
+U.login
+FROM USUARIO U
+WHERE U.login LIKE 'Carlos_Macha';
+)
+)
+
+
+//SELECT PARA PESQUISAR SENHA DE USUARIO NO BANCO//(
+
+SELECT
+U.senha
+FROM USUARIO U
+WHERE U.senha LIKE /*Senha da tabela de USUARIO*/
+
+EX:(
+
+SELECT
+U.login
+FROM USUARIO U
+WHERE U.login LIKE '1234';
+)
+)
+)
+
+
+
+//UPDATES(
+
+// UPDATE PARA AlTERAR AS TAREFA NO AGENDAMENTO DE UM USUARIO//(
+
+UPDATE TAREFA T
+SET nome_ta=/*Nome da tarefa*/
+WHERE idtarefa= /*Numero de indentificação tarefa na tabela tarefa*/
+
+EX:(
+
+UPDATE TAREFA T
+SET nome_ta= 'Estudo'
+WHERE idtarefa= 1
+)
+)
+
+
+
+// UPDATE PARA AlLTERAR A PRIORIDADE NO AGENDAMENTO DE UM USUARIO//(
+
+UPDATE TAREFA T
+SET nivel_prio= /*Nivel de prioridade da tarefa na tabela tarefa*/
+WHERE idtarefa= /*Numero de indentificação tarefa na tabela tarefa*/
+
+EX:(
+
+UPDATE TAREFA T
+SET nivel_prio= 'Dificil'
+WHERE idtarefa= 1
+
+)
+)
+
+
+
+// UPDATE PARA AlLTERAR O STATUS NO AGENDAMENTO DE UM USUARIO//(
+
+UPDATE TAREFA T
+SET status_ta=  /*Status da tarefa na tabela tarefa*/
+WHERE idtarefa= /*Numero de indentificação tarefa na tabela tarefa*/
+
+EX:(
+
+UPDATE TAREFA T
+SET status_ta= 'Medio'
+WHERE idtarefa= 1;
+
+)
+)
+
+
+
+
+// UPDATE PARA AlLTERAR O HORARIO NO AGENDAMENTO DE UM USUARIO//(
+
+UPDATE AGENDAMENTO
+SET horario_ta= /*horario_ta da tarefa na tabela Agendamento*/
+WHERE idtarefa= /*Numero de indentificação tarefa na tabela tarefa*/ and idusuario= /*Numero de indentificação do Usuario na tabela Usuario*/
+
+EX:(
+
+UPDATE AGENDAMENTO
+SET horario_ta= '16:15'
+WHERE idtarefa=1
+
+)
+)
+
+
+
+// UPDATE PARA AlLTERAR A DATA NO AGENDAMENTO DE UM USUARIO//(
+
+UPDATE AGENDAMENTO A
+SET data_ta= /*data_ta da tarefa na tabela Agendamento*/
+WHERE A.idtarefa= /*Numero de indentificação tarefa na tabela tarefa*/ AND A.idusuario= /*Numero de indentificação do Usuario na tabela Usuario*/
+
+EX:(
+
+UPDATE AGENDAMENTO A
+SET data_ta= '04/02/2012'
+WHERE A.idtarefa= 1 AND A.idusuario= 1
+
+)
+)
+
+)
+
+
+
+
+//DELETES(
+
+//DELETE PARA EXCLUIR UMA TAREFA//
+
+DELETE FROM TAREFA WHERE IDTAREFA= /*numero de indentificação da tarefa na tabela tarefa*/
+
+EX:(
+
+DELETE FROM TAREFA WHERE IDTAREFA= 1;
+
+)
+
+)
+
+
+###############################################################################################################################################################
